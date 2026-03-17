@@ -29,7 +29,6 @@ import {
   Mail,
   MapPin,
   MessageSquare,
-  Moon,
   Pencil,
   Phone,
   Scan,
@@ -40,9 +39,10 @@ import { motion } from "motion/react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { UserRole } from "../backend";
 import { AppHeader } from "../components/AppShell";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
-import { useUserProfile } from "../hooks/useQueries";
+import { useSaveUserProfile, useUserProfile } from "../hooks/useQueries";
 
 const ROLE_LABELS: Record<string, string> = {
   farmer: "🌾 Magsasaka (Farmer)",
@@ -97,12 +97,13 @@ interface EditFormState {
 
 export function ProfileScreen({ userName }: ProfileScreenProps) {
   const { data: profile, isLoading } = useUserProfile();
+  const saveProfileMutation = useSaveUserProfile();
   const { clear, identity } = useInternetIdentity();
   const principalEmail = identity?.getPrincipal().toString() ?? "Anonymous";
   const sensor = useSensorAnimation();
   const [scanning, setScanning] = useState(false);
 
-  // Local profile state
+  // Local profile state — hydrate from backend profile when available
   const [localProfile, setLocalProfile] = useState<EditFormState>({
     displayName: "",
     phone: "0991-9920-187",
@@ -119,7 +120,27 @@ export function ProfileScreen({ userName }: ProfileScreenProps) {
   // Settings toggles
   const [pushNotif, setPushNotif] = useState(true);
   const [smsAlerts, setSmsAlerts] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+
+  // Hydrate name/role from backend when profile loads
+  useEffect(() => {
+    if (profile) {
+      setLocalProfile((prev) => ({
+        ...prev,
+        displayName: profile.name || prev.displayName,
+        role: profile.role || prev.role,
+      }));
+    }
+  }, [profile]);
+
+  // Ensure dark mode is always off
+  useEffect(() => {
+    document.documentElement.classList.remove("dark");
+    try {
+      localStorage.removeItem("agrilife-dark-mode");
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const displayName = localProfile.displayName || profile?.name || userName;
 
@@ -139,14 +160,29 @@ export function ProfileScreen({ userName }: ProfileScreenProps) {
     setEditAvatarUrl(url);
   };
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
+    const prevProfile = { ...localProfile };
+    const roleValue = (editForm.role as UserRole) ?? UserRole.farmer;
+
+    // Optimistically update UI
     setLocalProfile(editForm);
     if (editAvatarUrl !== avatarUrl) {
       if (avatarUrl) URL.revokeObjectURL(avatarUrl);
       setAvatarUrl(editAvatarUrl);
     }
     setEditOpen(false);
-    toast.success("Profile updated!");
+
+    try {
+      await saveProfileMutation.mutateAsync({
+        name: editForm.displayName,
+        role: roleValue,
+      });
+      toast.success("Profile saved!");
+    } catch {
+      // Revert on error
+      setLocalProfile(prevProfile);
+      toast.error("Failed to save profile. Please try again.");
+    }
   };
 
   const handleScan = () => {
@@ -403,6 +439,7 @@ export function ProfileScreen({ userName }: ProfileScreenProps) {
                   data-ocid="profile.cancel_button"
                   className="flex-1 rounded-xl"
                   onClick={() => setEditOpen(false)}
+                  disabled={saveProfileMutation.isPending}
                 >
                   Cancel
                 </Button>
@@ -410,8 +447,16 @@ export function ProfileScreen({ userName }: ProfileScreenProps) {
                   data-ocid="profile.save_button"
                   className="flex-1 rounded-xl bg-agri-forest hover:bg-agri-forest/90 text-white"
                   onClick={handleSaveProfile}
+                  disabled={saveProfileMutation.isPending}
                 >
-                  Save Changes
+                  {saveProfileMutation.isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -545,30 +590,6 @@ export function ProfileScreen({ userName }: ProfileScreenProps) {
                     }}
                   />
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-agri-pale flex items-center justify-center">
-                      <Moon className="w-4 h-4 text-agri-forest" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">
-                        Dark Mode
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Switch to dark theme
-                      </p>
-                    </div>
-                  </div>
-                  <Switch
-                    checked={darkMode}
-                    data-ocid="profile.switch"
-                    onCheckedChange={(v) => {
-                      setDarkMode(v);
-                      toast.info("Coming soon 🌙");
-                    }}
-                  />
-                </div>
               </div>
             </div>
           </motion.div>
@@ -671,16 +692,7 @@ export function ProfileScreen({ userName }: ProfileScreenProps) {
           {/* Footer */}
           <footer className="text-center pb-4">
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()}. Built with{" "}
-              <span className="text-agri-red">♥</span> using{" "}
-              <a
-                href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-agri-forest font-semibold hover:underline"
-              >
-                caffeine.ai
-              </a>
+              Thank you for using AgriLife
             </p>
           </footer>
         </div>

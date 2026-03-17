@@ -438,16 +438,7 @@ export function HomeScreen({ userName, onTabChange }: HomeScreenProps) {
           {/* Footer */}
           <footer className="text-center pt-2 pb-4">
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()}. Built with{" "}
-              <span className="text-agri-red">♥</span> using{" "}
-              <a
-                href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-agri-forest font-semibold hover:underline"
-              >
-                caffeine.ai
-              </a>
+              Thank you for using AgriLife
             </p>
           </footer>
         </div>

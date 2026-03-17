@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Wheat } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useEffect } from "react";
 
@@ -29,12 +29,13 @@ export function SuccessScreen({ onContinue, userName }: SuccessScreenProps) {
         className="flex flex-col items-center"
         data-ocid="success.modal"
       >
+        <img
+          src="/assets/uploads/AgriLearn-countrysid-1.png"
+          alt="AgriLife Logo"
+          className="h-20 object-contain mb-6 drop-shadow-lg"
+        />
         <div className="w-28 h-28 bg-white/20 rounded-full flex items-center justify-center mb-6 shadow-float">
           <CheckCircle className="w-16 h-16 text-white" />
-        </div>
-        <div className="flex items-center gap-2 mb-2">
-          <Wheat className="w-6 h-6 text-white/80" />
-          <span className="text-white/80 text-lg font-semibold">AgriLife</span>
         </div>
         <h2 className="text-white font-display font-bold text-3xl text-center mb-2">
           SUCCESSFULLY LOGGED-IN!

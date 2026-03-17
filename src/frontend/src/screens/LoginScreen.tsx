@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Leaf, Lock, Mail, Wheat } from "lucide-react";
+import { Leaf, Lock, Mail } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useState } from "react";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
@@ -45,8 +45,12 @@ export function LoginScreen({ onShowSignup }: LoginScreenProps) {
       >
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-4 shadow-float">
-            <Wheat className="w-10 h-10 text-white" />
+          <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-4 shadow-float">
+            <img
+              src="/assets/uploads/AgriLearn-countrysid-1.png"
+              alt="AgriLife logo"
+              className="w-20 h-20 object-contain"
+            />
           </div>
           <h1 className="text-white font-display font-bold text-4xl tracking-tight">
             AgriLife

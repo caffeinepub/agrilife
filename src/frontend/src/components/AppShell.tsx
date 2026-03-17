@@ -98,7 +98,11 @@ export function AppHeader({ userName, subtitle }: AppHeaderProps) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
-              <Wheat className="w-5 h-5 text-white" />
+              <img
+                src="/assets/uploads/AgriLearn-countrysid-1.png"
+                alt="AgriLife logo"
+                className="w-8 h-8 object-contain"
+              />
             </div>
             <span className="text-white font-display font-bold text-lg tracking-wide">
               AgriLife
