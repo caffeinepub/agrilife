@@ -1,11 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import {
   ArrowRight,
   BookMarked,
@@ -292,18 +287,20 @@ export function BlogScreen({ userName }: BlogScreenProps) {
         </div>
       </main>
 
-      {/* ── Article Reader Sheet ── */}
-      <Sheet
+      {/* ── Article Reader Dialog (centered popup panel) ── */}
+      <Dialog
         open={!!selectedArticle}
         onOpenChange={(open) => !open && setSelectedArticle(null)}
       >
-        <SheetContent
-          side="bottom"
-          className="h-[92vh] rounded-t-3xl p-0 overflow-hidden flex flex-col"
-          data-ocid="blog.article.sheet"
+        <DialogContent
+          className="p-0 overflow-hidden flex flex-col max-w-[420px] rounded-3xl border-0 shadow-2xl"
+          style={{ maxHeight: "85vh" }}
+          data-ocid="blog.article.dialog"
+          showCloseButton={false}
         >
           {selectedArticle && (
             <>
+              {/* Hero image with overlays */}
               <div className="relative flex-shrink-0">
                 <img
                   src={BLOG_IMAGES[selectedArticle.category] ?? BLOG_IMAGES.All}
@@ -317,14 +314,16 @@ export function BlogScreen({ userName }: BlogScreenProps) {
                       "linear-gradient(to top, oklch(0.10 0.04 145 / 0.90) 0%, transparent 55%)",
                   }}
                 />
+                {/* Close button */}
                 <button
                   type="button"
                   onClick={() => setSelectedArticle(null)}
-                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center"
-                  data-ocid="blog.article.sheet.close_button"
+                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
+                  data-ocid="blog.article.dialog.close_button"
                 >
                   <X className="w-5 h-5 text-white" />
                 </button>
+                {/* Category + Title overlay */}
                 <div className="absolute bottom-4 left-5 right-5">
                   <span
                     className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
@@ -341,6 +340,7 @@ export function BlogScreen({ userName }: BlogScreenProps) {
                 </div>
               </div>
 
+              {/* Scrollable body */}
               <ScrollArea className="flex-1 overflow-y-auto">
                 <div className="p-5 space-y-4">
                   <p
@@ -354,19 +354,20 @@ export function BlogScreen({ userName }: BlogScreenProps) {
                     style={{ background: "oklch(0.41 0.13 145 / 0.3)" }}
                   />
                   <div className="text-sm text-foreground leading-relaxed space-y-4">
-                    {selectedArticle.body.split("\n\n").map((para, _idx) => (
+                    {selectedArticle.body.split("\n\n").map((para) => (
                       <p key={para.slice(0, 20)}>{para}</p>
                     ))}
                   </div>
                 </div>
               </ScrollArea>
 
+              {/* Action buttons */}
               <div className="flex gap-3 p-4 border-t border-border flex-shrink-0">
                 <Button
                   variant="outline"
                   className="flex-1 rounded-xl font-semibold"
                   onClick={() => toast.success("Article link copied! 📰")}
-                  data-ocid="blog.article.sheet.button"
+                  data-ocid="blog.article.dialog.button"
                 >
                   <Share2 className="w-4 h-4 mr-2" /> Share
                 </Button>
@@ -380,15 +381,15 @@ export function BlogScreen({ userName }: BlogScreenProps) {
                       ),
                     );
                   }}
-                  data-ocid="blog.article.sheet.primary_button"
+                  data-ocid="blog.article.dialog.primary_button"
                 >
                   <Bookmark className="w-4 h-4 mr-2" /> Save Article
                 </Button>
               </div>
             </>
           )}
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

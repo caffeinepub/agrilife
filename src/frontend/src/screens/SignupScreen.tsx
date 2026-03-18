@@ -65,7 +65,7 @@ export function SignupScreen({ onBack }: SignupScreenProps) {
         <div className="flex flex-col items-center mb-8">
           <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-4 shadow-float">
             <img
-              src="/assets/uploads/AgriLearn-countrysid-1.png"
+              src="/assets/uploads/AgriLearn-countrysid-2-1.png"
               alt="AgriLife logo"
               className="w-20 h-20 object-contain"
             />

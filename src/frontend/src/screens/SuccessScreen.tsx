@@ -30,7 +30,7 @@ export function SuccessScreen({ onContinue, userName }: SuccessScreenProps) {
         data-ocid="success.modal"
       >
         <img
-          src="/assets/uploads/AgriLearn-countrysid-1.png"
+          src="/assets/uploads/AgriLearn-countrysid-2-1.png"
           alt="AgriLife Logo"
           className="h-20 object-contain mb-6 drop-shadow-lg"
         />

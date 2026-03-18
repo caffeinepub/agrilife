@@ -99,7 +99,7 @@ export function AppHeader({ userName, subtitle }: AppHeaderProps) {
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
               <img
-                src="/assets/uploads/AgriLearn-countrysid-1.png"
+                src="/assets/uploads/AgriLearn-countrysid-2-1.png"
                 alt="AgriLife logo"
                 className="w-8 h-8 object-contain"
               />
